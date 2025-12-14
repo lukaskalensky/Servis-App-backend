@@ -29,7 +29,7 @@ class UserRegister(MethodView):
             username=user_data["username"],
             email=user_data["email"]
         )
-        user.set_password(user_data["password"])  # Nastaví hash hesla
+        user.password(user_data["password"])  # Nastaví hash hesla
 
         try:
             db.session.add(user)
