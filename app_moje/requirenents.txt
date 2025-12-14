@@ -1,0 +1,9 @@
+Flask>=3.0.0
+Werkzeug>=3.0.0 # Závislost Flasku, explicitní uvedení může pomoci s kompatibilitou
+Flask-SQLAlchemy>=3.1.1
+SQLAlchemy>=2.0.0
+psycopg2-binary>=2.9.0 # Nebo jiný DBAPI ovladač
+Flask-JWT-Extended>=4.0.0
+passlib[bcrypt]>=1.7.0 # Pro hashování hesel
+flask-smorest>=0.42.0 # Nebo novější verze
+marshmallow>=3.0.0 # Závislost Flask-Smorest
