@@ -10,7 +10,7 @@ class User(db.Model):
 
     email = db.Column(db.String(255), nullable=True)
 
-    password_hash = db.Column(db.String(128), nullable=False)
+    password_hash = db.Column(db.String(255), nullable=False)
 
     @property
     def password(self):
