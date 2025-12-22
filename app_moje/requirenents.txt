@@ -7,3 +7,4 @@ Flask-JWT-Extended>=4.0.0
 passlib[bcrypt]>=1.7.0 # Pro hashování hesel
 flask-smorest>=0.42.0 # Nebo novější verze
 marshmallow>=3.0.0 # Závislost Flask-Smorest
+paramiko>=3.0.0

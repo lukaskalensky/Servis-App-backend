@@ -5,7 +5,7 @@ from flask_jwt_extended import create_access_token, create_refresh_token, jwt_re
 from flask import jsonify
 from .db import db
 from .modely import User
-from .schema import UserRegisterSchema, UserLoginSchema, UserSchema
+from schema.user import UserRegisterSchema, UserLoginSchema, UserSchema
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import or_  # Pro vyhledávání podle jména NEBO emailu
 
