@@ -4,8 +4,13 @@ from flask_smorest import Api
 from flask_jwt_extended import JWTManager
 from datetime import timedelta
 from .auth import blp as AuthV1Blueprint
+from .fotky import blp as FotkyV1Blueprint
+from .moto_upload import blp as Moto_UploadV1Blueprint
+from .moto import blp as MotoV1Blueprint
+from .servis import blp as ServisV1Blueprint
+from .ukon import blp as UkonV1Blueprint
 from .db import db
-from .modely import User
+from .modely import User, Moto, Servis, Fotky, Ukon
 
 
 def create_app():
@@ -27,11 +32,17 @@ def create_app():
 
     # Zde můžete přidat další blueprinty (např. pro webové rozhraní, pokud by bylo)
     app.register_blueprint(AuthV1Blueprint)
+    app.register_blueprint(FotkyV1Blueprint)
+    app.register_blueprint(Moto_UploadV1Blueprint)
+    app.register_blueprint(MotoV1Blueprint)
+    app.register_blueprint(ServisV1Blueprint)
+    app.register_blueprint(UkonV1Blueprint)
     # Shell kontext pro `flask shell`
 
     @app.shell_context_processor
     def make_shell_context():
-        return {"db": db, "User": User}  # Přidejte sem své modely
+        # Přidejte sem své modely
+        return {"db": db, "User": User, "Moto": Moto, "Servis": Servis, "Fotky": Fotky, "Ukon": Ukon}
 
     # Jednoduchá testovací routa na kořeni
     @app.route("/hello")
