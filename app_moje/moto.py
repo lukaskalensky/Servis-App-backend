@@ -4,7 +4,7 @@ from flask_jwt_extended import create_access_token, create_refresh_token, jwt_re
 from flask import jsonify
 from .db import db
 from .modely import Moto
-from schema.moto import MotoBaseSchema, MotoSchema
+from app_moje.schema.moto import MotoBaseSchema, MotoSchema
 from sqlalchemy.exc import IntegrityError, SQLAlchemyError
 from sqlalchemy import or_
 

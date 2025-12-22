@@ -5,7 +5,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from .db import db
 from .modely import Servis
-from schema.servis import ServisSchema, ServisBaseSchema
+from app_moje.schema.servis import ServisSchema, ServisBaseSchema
 
 blp = Blueprint(
     "servis",

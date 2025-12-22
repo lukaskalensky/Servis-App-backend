@@ -5,7 +5,7 @@ from sqlalchemy.exc import SQLAlchemyError
 
 from .db import db
 from .modely import Ukon
-from schema.ukon import UkonSchema, UkonBaseSchema
+from app_moje.schema.ukon import UkonSchema, UkonBaseSchema
 
 blp = Blueprint(
     "ukon",

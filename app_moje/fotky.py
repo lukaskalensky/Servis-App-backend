@@ -10,7 +10,7 @@ import tempfile
 
 from .db import db
 from .modely import Servis, Fotky
-from schema.fotky import FotkaSchema
+from app_moje.schema.fotky import FotkaSchema
 from .sftp import upload_file_sftp, download_file_sftp
 
 UPLOAD_BASE_PATH = "/app/uploads"
