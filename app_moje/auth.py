@@ -60,9 +60,9 @@ class UserLogin(MethodView):
 
         if user and user.check_password(password):
             # Identita pro JWT může být ID uživatele
-            access_token = create_access_token(str(identity=user.id))
+            access_token = create_access_token(identity=user.id)
             refresh_token = create_refresh_token(
-                str(identity=user.id))  # Volitelný refresh token
+                identity=user.id)  # Volitelný refresh token
             return jsonify(access_token=access_token, refresh_token=refresh_token), 200
 
         abort(401, message="Nesprávné uživatelské jméno/email nebo heslo.")
@@ -76,5 +76,5 @@ class TokenRefresh(MethodView):
     def post(self):
         # Získá identitu uživatele z refresh tokenu
         current_user_id = get_jwt_identity()
-        new_access_token = create_access_token(identity=str(current_user_id))
+        new_access_token = create_access_token(identity=current_user_id)
         return jsonify(access_token=new_access_token), 200
