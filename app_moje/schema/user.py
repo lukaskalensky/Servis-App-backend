@@ -17,7 +17,6 @@ class UserRegisterSchema(UserBaseSchema):
 
 class UserSchema(UserBaseSchema):  # Pro zobrazení dat uživatele (bez hesla)
     id = fields.Int(dump_only=True)
-    created_at = fields.DateTime(dump_only=True)
 
 
 class UserLoginSchema(Schema):

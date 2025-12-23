@@ -17,4 +17,3 @@ class TankovaniBaseSchema(Schema):
 # Pro zobrazení dat uživatele (bez hesla)
 class TankovaniSchema(TankovaniBaseSchema):
     id = fields.Int(dump_only=True)
-    datum = fields.Str(dump_only=True)
