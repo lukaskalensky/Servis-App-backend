@@ -3,9 +3,9 @@ from flask_smorest import Blueprint, abort
 from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import SQLAlchemyError
 
-from db import db
-from modely import Poznamky  # Ujisti se, že importuješ model správně
-from schema.poznamky import PoznamkySchema, PoznamkyBaseSchema
+from .db import db
+from .modely import Poznamky  # Ujisti se, že importuješ model správně
+from app_moje.schema.poznamky import PoznamkySchema, PoznamkyBaseSchema
 
 blp = Blueprint(
     "poznamky",
