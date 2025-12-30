@@ -9,8 +9,9 @@ from .moto_upload import blp as Moto_UploadV1Blueprint
 from .moto import blp as MotoV1Blueprint
 from .servis import blp as ServisV1Blueprint
 from .ukon import blp as UkonV1Blueprint
+from .poznamky import blp as PoznamkyV1Blueprint
 from .db import db
-from .modely import User, Moto, Servis, Fotky, Ukon
+from .modely import User, Moto, Servis, Fotky, Ukon, Poznamky
 
 
 def create_app():
@@ -37,12 +38,13 @@ def create_app():
     app.register_blueprint(MotoV1Blueprint)
     app.register_blueprint(ServisV1Blueprint)
     app.register_blueprint(UkonV1Blueprint)
+    app.register_blueprint(PoznamkyV1Blueprint)
     # Shell kontext pro `flask shell`
 
     @app.shell_context_processor
     def make_shell_context():
         # Přidejte sem své modely
-        return {"db": db, "User": User, "Moto": Moto, "Servis": Servis, "Fotky": Fotky, "Ukon": Ukon}
+        return {"db": db, "User": User, "Moto": Moto, "Servis": Servis, "Fotky": Fotky, "Ukon": Ukon, "Poznamky": Poznamky}
 
     # Jednoduchá testovací routa na kořeni
     @app.route("/hello")
