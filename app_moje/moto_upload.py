@@ -24,16 +24,16 @@ blp = Blueprint(
 )
 
 
-@blp.route("/<int:moto_id>/image")
+@blp.route("/<str:moto_nazev>/image")
 class MotoImageUpload(MethodView):
 
     @jwt_required()
-    def post(self, moto_id):
+    def post(self, moto_nazev):
         user_id = get_jwt_identity()
 
         moto = db.session.execute(
             db.select(Moto).where(
-                Moto.id == moto_id,
+                Moto.nazev == moto_nazev,
                 Moto.user_id == user_id
             )
         ).scalar_one_or_none()
@@ -56,7 +56,7 @@ class MotoImageUpload(MethodView):
             tmp_path = tmp.name
 
         remote_path = (
-            f"{UPLOAD_BASE_PATH}/moto/{user_id}/{moto_id}/{filename}"
+            f"{UPLOAD_BASE_PATH}/moto/{user_id}/{moto_nazev}/{filename}"
         )
 
         try:
@@ -65,7 +65,7 @@ class MotoImageUpload(MethodView):
             os.remove(tmp_path)
 
         moto.image = (
-            f"{UPLOAD_PUBLIC_URL}/moto/{user_id}/{moto_id}/{filename}"
+            f"{UPLOAD_PUBLIC_URL}/moto/{user_id}/{moto_nazev}/{filename}"
         )
 
         db.session.commit()
@@ -76,10 +76,10 @@ class MotoImageUpload(MethodView):
         }, 200
 
     @jwt_required()
-    def get(self, moto_id):
+    def get(self, moto_nazev):
         # 1. Najdeme záznam v databázi
         moto = db.session.execute(
-            db.select(Moto).where(Moto.id == moto_id)
+            db.select(Moto).where(Moto.nazev == moto_nazev)
         ).scalar_one_or_none()
 
         if not moto or not moto.image:
@@ -92,7 +92,7 @@ class MotoImageUpload(MethodView):
         # Sestavíme cestu, kde by měl soubor na SFTP ležet
         # Musí to odpovídat logice, kterou jste použil při uploadu:
         # f"{UPLOAD_BASE_PATH}/moto/{user_id}/{moto_id}/{filename}"
-        remote_path = f"{UPLOAD_BASE_PATH}/moto/{moto.user_id}/{moto_id}/{filename}"
+        remote_path = f"{UPLOAD_BASE_PATH}/moto/{moto.user_id}/{moto_nazev}/{filename}"
 
         try:
             # 3. Stažení bytů přes vaši SFTP funkci

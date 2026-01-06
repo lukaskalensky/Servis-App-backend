@@ -24,17 +24,18 @@ blp = Blueprint(
 )
 
 
-@blp.route("/<int:servis_id>/fotky")
+@blp.route("/<int:servis_km>/str:servis_typ/fotky")
 class FotkaUpload(MethodView):
 
     @jwt_required()
     @blp.response(201, FotkaSchema)
-    def post(self, servis_id):
+    def post(self, servis_km, servis_typ):
         user_id = get_jwt_identity()
 
         servis = db.session.execute(
             db.select(Servis).where(
-                Servis.id == servis_id,
+                Servis.km == servis_km,
+                Servis.typ == servis_typ,
                 Servis.user_id == user_id
             )
         ).scalar_one_or_none()
@@ -58,7 +59,7 @@ class FotkaUpload(MethodView):
 
         remote_path = (
             f"{UPLOAD_BASE_PATH}/servis/"
-            f"user_{user_id}/servis_{servis_id}/{filename}"
+            f"user_{user_id}/servis_{servis_km}/{filename}"
         )
 
         try:
@@ -67,10 +68,10 @@ class FotkaUpload(MethodView):
             os.remove(tmp_path)
 
         fotka = Fotky(
-            idzaznamu=servis_id,
+            idzaznamu=servis.id,
             pathobrazku=(
                 f"{UPLOAD_PUBLIC_URL}/servis/"
-                f"user_{user_id}/servis_{servis_id}/{filename}"
+                f"user_{user_id}/servis_{servis_km}/{filename}"
             )
         )
 
@@ -81,24 +82,24 @@ class FotkaUpload(MethodView):
 
 
 @jwt_required()
-@blp.route("/<int:servis_id>/fotky")
+@blp.route("/<int:servis_km>/str:servis_typ/fotky")
 class FotkaList(MethodView):
 
     @blp.response(200, FotkaSchema(many=True))
-    def get(self, servis_id):
+    def get(self,  servis_km, servis_typ):
         user_id = get_jwt_identity()
 
         servis = db.session.execute(
             db.select(Servis).where(
-                Servis.id == servis_id,
+                Servis.km == servis_km,
+                Servis.typ == servis_typ,
                 Servis.user_id == user_id
             )
-        ).scalar_one_or_none()
+        ).scalars().all()
 
         if not servis:
             abort(404, message="Servis nenalezen")
-
-        return servis.fotky
+        return servis
 
 
 @blp.route("/fotky/<int:fotka_id>/download")
