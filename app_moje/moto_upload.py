@@ -24,7 +24,7 @@ blp = Blueprint(
 )
 
 
-@blp.route("/<str:moto_nazev>/image")
+@blp.route("/<string:moto_nazev>/image")
 class MotoImageUpload(MethodView):
 
     @jwt_required()
