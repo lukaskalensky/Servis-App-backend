@@ -2,6 +2,8 @@ from marshmallow import Schema, fields, validate
 
 
 class PoznamkyBaseSchema(Schema):
+    nazev = fields.Str(
+        required=True)
     nazev_motorky = fields.Str(
         required=True)
     datumdatetime = fields.DateTime(required=True)

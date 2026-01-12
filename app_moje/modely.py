@@ -131,6 +131,7 @@ class Palivo(db.Model):
 class Poznamky(db.Model):
     __tablename__ = "poznamky"
     id = db.Column(db.Integer, primary_key=True)
+    nazev = db.Column(db.String(50), nullable=False)
     nazev_motorky = db.Column(db.String(50), nullable=False)
     datumdatetime = db.Column(db.DateTime, nullable=False)
     poznamky = db.Column(db.String(255), nullable=False)
