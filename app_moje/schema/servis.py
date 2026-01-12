@@ -4,8 +4,8 @@ from marshmallow import Schema, fields, validate
 class ServisBaseSchema(Schema):
     nazev_motorky = fields.Str(
         required=True)
-    datumdatetime = fields.DateTime(required=True, format="%Y-%m-%d")
-    dalsivymenadatetime = fields.DateTime(required=True, format="%Y-%m-%d")
+    datumdatetime = fields.DateTime(required=True)
+    dalsivymenadatetime = fields.DateTime(required=True)
     km = fields.Int(required=True)
     kmdalsi = fields.Int(required=True)
     typ = fields.Str(required=True)
