@@ -4,7 +4,7 @@ import os
 SFTP_HOST = "localhost"
 SFTP_PORT = 22
 SFTP_USER = "sftpaplikace"
-SFTP_PASSWORD = "sftpaplikace"
+SFTP_PASSWORD = "aplikace"
 
 UPLOAD_BASE_PATH = "/app/uploads"
 UPLOAD_PUBLIC_URL = "/app/uploads"
