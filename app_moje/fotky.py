@@ -95,11 +95,11 @@ class FotkaList(MethodView):
                 Servis.typ == servis_typ,
                 Servis.user_id == user_id
             )
-        ).scalars().all()
+        ).scalar_one_or_none()
 
         if not servis:
             abort(404, message="Servis nenalezen")
-        return servis
+        return servis.fotky
 
 
 @blp.route("/fotky/<int:fotka_id>/download")
