@@ -24,7 +24,7 @@ blp = Blueprint(
 )
 
 
-@blp.route("/<int:servis_km>/string:servis_typ/fotky")
+@blp.route("/<int:servis_km>/<string:servis_typ>/fotky")
 class FotkaUpload(MethodView):
 
     @jwt_required()
@@ -82,7 +82,7 @@ class FotkaUpload(MethodView):
 
 
 @jwt_required()
-@blp.route("/<int:servis_km>/string:servis_typ/fotky")
+@blp.route("/<int:servis_km>/<string:servis_typ>/fotky")
 class FotkaList(MethodView):
 
     @blp.response(200, FotkaSchema(many=True))
