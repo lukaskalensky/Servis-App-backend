@@ -6,8 +6,8 @@ SFTP_PORT = 22
 SFTP_USER = "sftpaplikace"
 SFTP_PASSWORD = "aplikace"
 
-UPLOAD_BASE_PATH = "/app/uploads"
-UPLOAD_PUBLIC_URL = "/app/uploads"
+UPLOAD_BASE_PATH = "/sftpaplikace/uploads"
+UPLOAD_PUBLIC_URL = "/sftpaplikace/uploads"
 
 
 def upload_file_sftp(local_path, remote_path):
