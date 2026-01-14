@@ -13,8 +13,8 @@ from .db import db
 from .modely import Moto
 from .sftp import upload_file_sftp, download_file_sftp
 
-UPLOAD_BASE_PATH = "/app/uploads"
-UPLOAD_PUBLIC_URL = "/app/uploads"
+UPLOAD_BASE_PATH = "sftpaplikace/uploads"
+UPLOAD_PUBLIC_URL = "sftpaplikace/uploads"
 
 blp = Blueprint(
     "moto_upload",
