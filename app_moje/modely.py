@@ -93,7 +93,7 @@ class Servis(db.Model):
         primaryjoin="and_(foreign(Fotky.idzaznamu) == Servis.id, Fotky.poznamka_bool == False)",
         back_populates="servis",
         cascade="all, delete-orphan",
-        overlaps="poznamky_fotky"  # Prevence varování SQLAlchemy
+        overlaps="poznamky"  # Prevence varování SQLAlchemy
     )
 
 
@@ -109,14 +109,16 @@ class Fotky(db.Model):
     servis = db.relationship(
         "Servis",
         primaryjoin="and_(foreign(Fotky.idzaznamu) == Servis.id, Fotky.poznamka_bool == False)",
-        back_populates="fotky"
+        back_populates="fotky",
+        overlaps="poznamky"
     )
 
     # 2. Relace na POZNÁMKY (platí jen když poznamka_bool == True)
     poznamky = db.relationship(
         "Poznamky",
         primaryjoin="and_(foreign(Fotky.idzaznamu) == Poznamky.id, Fotky.poznamka_bool == True)",
-        back_populates="fotky"
+        back_populates="fotky",
+        overlaps="servis"
     )
 
 
@@ -152,7 +154,8 @@ class Poznamky(db.Model):
     user_id = db.Column(
         db.Integer,
         db.ForeignKey("users.id"),
-        nullable=False
+        nullable=False,
+        overlaps="servis"
     )
 
     fotky = db.relationship(
@@ -167,5 +170,5 @@ class Poznamky(db.Model):
         cascade="all, delete-orphan",
 
         # Důležité pro zamezení chyb při překrývání vztahů
-        overlaps="servis_fotky"
+        overlaps="servis"
     )
