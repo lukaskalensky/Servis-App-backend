@@ -82,7 +82,7 @@ class FotkaUpload(MethodView):
         return fotka
 
 
-@blp.route("/<string:poznamky_datum/<string:nazev_motorky>/<string:nazev_poznamky>/fotky")
+@blp.route("/<string:poznamky_datum>/<string:nazev_motorky>/<string:nazev_poznamky>/fotky")
 class FotkaPoznamkyUpload(MethodView):
 
     @jwt_required()
@@ -168,7 +168,7 @@ class FotkaList(MethodView):
         return servis.fotky
 
 
-@blp.route("/<string:poznamky_datum/<string:nazev_motorky>/<string:nazev_poznamky>/fotky")
+@blp.route("/<string:poznamky_datum>/<string:nazev_motorky>/<string:nazev_poznamky>/fotky")
 class FotkaPoznamkyList(MethodView):
 
     @jwt_required()
@@ -208,6 +208,7 @@ class FotkaDownload(MethodView):
             .join(Servis)
             .where(
                 Fotky.id == fotka_id,
+                Fotky.poznamka_bool == False,
                 Servis.user_id == user_id
             )
         ).scalar_one_or_none()
@@ -241,6 +242,7 @@ class FotkaPoznamkyDownload(MethodView):
             .join(Poznamky, Fotky.idzaznamu == Poznamky.id)
             .where(
                 Fotky.id == fotka_id,
+                Fotky.poznamka_bool == True,
                 Poznamky.user_id == user_id
             )
         ).scalar_one_or_none()

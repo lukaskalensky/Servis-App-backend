@@ -1,6 +1,8 @@
 from .db import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from passlib.hash import pbkdf2_sha256 as sha256  # Nebo bcrypt, argon2
+from sqlalchemy.orm import foreign
+from sqlalchemy import and_
 
 
 class User(db.Model):
@@ -85,10 +87,13 @@ class Servis(db.Model):
 
     user = db.relationship("User", backref="servisy")
 
+    # OPRAVA: Přidán primaryjoin, aby se nemíchaly fotky poznámek
     fotky = db.relationship(
         "Fotky",
+        primaryjoin="and_(foreign(Fotky.idzaznamu) == Servis.id, Fotky.poznamka_bool == False)",
         back_populates="servis",
-        cascade="all, delete-orphan"
+        cascade="all, delete-orphan",
+        overlaps="poznamky_fotky"  # Prevence varování SQLAlchemy
     )
 
 
@@ -96,12 +101,8 @@ class Fotky(db.Model):
     __tablename__ = "fotky"
 
     id = db.Column(db.Integer, primary_key=True)
-    poznamky_bool = db.Column(db.Bool, default=False)
-    idzaznamu = db.Column(
-        db.Integer,
-        db.ForeignKey("servis.id"),
-        nullable=False
-    )
+    poznamka_bool = db.Column(db.Boolean, default=False)
+    idzaznamu = db.Column(db.Integer, nullable=False)
 
     pathobrazku = db.Column(db.String(255), nullable=False)
 
