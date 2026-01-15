@@ -205,7 +205,7 @@ class FotkaDownload(MethodView):
 
         fotka = db.session.execute(
             db.select(Fotky)
-            .join(Servis)
+            .join(Fotky.servis)
             .where(
                 Fotky.id == fotka_id,
                 Fotky.poznamka_bool == False,
@@ -239,7 +239,7 @@ class FotkaPoznamkyDownload(MethodView):
 
         fotka = db.session.execute(
             db.select(Fotky)
-            .join(Poznamky, Fotky.idzaznamu == Poznamky.id)
+            .join(Fotky.poznamky)
             .where(
                 Fotky.id == fotka_id,
                 Fotky.poznamka_bool == True,
