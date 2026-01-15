@@ -13,3 +13,4 @@ class PoznamkyBaseSchema(Schema):
 
 class PoznamkySchema(PoznamkyBaseSchema):
     id = fields.Int(dump_only=True)
+    user_id = fields.Int(dump_only=True)

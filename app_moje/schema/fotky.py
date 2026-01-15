@@ -8,5 +8,6 @@ class FotkyBaseSchema(Schema):
 
 class FotkaSchema(Schema):
     id = fields.Int(dump_only=True)
+    poznamka_bool = fields.Bool(dump_only=True)
     idzaznamu = fields.Int(dump_only=True)
     pathobrazku = fields.Str(dump_only=True)

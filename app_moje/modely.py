@@ -96,7 +96,7 @@ class Fotky(db.Model):
     __tablename__ = "fotky"
 
     id = db.Column(db.Integer, primary_key=True)
-
+    poznamky_bool = db.Column(db.Bool, default=False)
     idzaznamu = db.Column(
         db.Integer,
         db.ForeignKey("servis.id"),
@@ -105,7 +105,18 @@ class Fotky(db.Model):
 
     pathobrazku = db.Column(db.String(255), nullable=False)
 
-    servis = db.relationship("Servis", back_populates="fotky")
+    servis = db.relationship(
+        "Servis",
+        primaryjoin="and_(foreign(Fotky.idzaznamu) == Servis.id, Fotky.poznamka_bool == False)",
+        back_populates="fotky"
+    )
+
+    # 2. Relace na POZNÁMKY (platí jen když poznamka_bool == True)
+    poznamky = db.relationship(
+        "Poznamky",
+        primaryjoin="and_(foreign(Fotky.idzaznamu) == Poznamky.id, Fotky.poznamka_bool == True)",
+        back_populates="fotky"
+    )
 
 
 class Tankovani(db.Model):
@@ -136,3 +147,24 @@ class Poznamky(db.Model):
     datumdatetime = db.Column(db.DateTime, nullable=False)
     poznamky = db.Column(db.String(255), nullable=False)
     imagepocet = db.Column(db.Integer, nullable=False)
+
+    user_id = db.Column(
+        db.Integer,
+        db.ForeignKey("users.id"),
+        nullable=False
+    )
+
+    fotky = db.relationship(
+        "Fotky",
+        # TOTO JE KLÍČOVÁ ÚPRAVA:
+        primaryjoin="and_(foreign(Fotky.idzaznamu) == Poznamky.id, Fotky.poznamka_bool == True)",
+
+        # Pokud v modelu Fotky nemáte definovaný vztah zpět k poznámkám,
+        # 'back_populates' může dělat problémy.
+        # Pokud ho tam máte, nechte ho. Pokud ne, raději použijte viewonly=True pro čtení.
+        # Ale pro cascade delete to obvykle potřebujete takto:
+        cascade="all, delete-orphan",
+
+        # Důležité pro zamezení chyb při překrývání vztahů
+        overlaps="servis_fotky"
+    )
