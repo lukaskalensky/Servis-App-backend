@@ -93,7 +93,7 @@ class Servis(db.Model):
         primaryjoin="and_(foreign(Fotky.idzaznamu) == Servis.id, Fotky.poznamka_bool == False)",
         back_populates="servis",
         cascade="all, delete-orphan",
-        overlaps="poznamky"  # Prevence varování SQLAlchemy
+        overlaps="fotky"  # Prevence varování SQLAlchemy
     )
 
 
@@ -169,5 +169,5 @@ class Poznamky(db.Model):
         cascade="all, delete-orphan",
 
         # Důležité pro zamezení chyb při překrývání vztahů
-        overlaps="servis"
+        overlaps="fotky"
     )
