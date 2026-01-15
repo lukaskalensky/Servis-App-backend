@@ -128,6 +128,8 @@ class FotkaDownload(MethodView):
         # streamujeme přes Flask
         return send_file(
             io.BytesIO(file_bytes),
-            attachment_filename=fotka.pathobrazku.split("/")[-1],
-            mimetype="image/jpeg"
+            download_name=fotka.pathobrazku.split(
+                "/")[-1],  # Renamed from attachment_filename
+            mimetype="image/jpeg",
+            as_attachment=True  # Doporučeno přidat, pokud chcete vynutit stažení
         )
