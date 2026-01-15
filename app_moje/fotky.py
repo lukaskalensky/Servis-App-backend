@@ -81,10 +81,10 @@ class FotkaUpload(MethodView):
         return fotka
 
 
-@jwt_required()
 @blp.route("/<int:servis_km>/<string:servis_typ>/fotky")
 class FotkaList(MethodView):
 
+    @jwt_required()
     @blp.response(200, FotkaSchema(many=True))
     def get(self,  servis_km, servis_typ):
         user_id = get_jwt_identity()
