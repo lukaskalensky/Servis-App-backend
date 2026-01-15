@@ -93,7 +93,7 @@ class Servis(db.Model):
         primaryjoin="and_(foreign(Fotky.idzaznamu) == Servis.id, Fotky.poznamka_bool == False)",
         back_populates="servis",
         cascade="all, delete-orphan",
-        overlaps="fotky"  # Prevence varování SQLAlchemy
+        overlaps="poznamky, fotky"
     )
 
 
@@ -110,7 +110,7 @@ class Fotky(db.Model):
         "Servis",
         primaryjoin="and_(foreign(Fotky.idzaznamu) == Servis.id, Fotky.poznamka_bool == False)",
         back_populates="fotky",
-        overlaps="poznamky"
+        overlaps="poznamky, fotky"
     )
 
     # 2. Relace na POZNÁMKY (platí jen když poznamka_bool == True)
@@ -118,7 +118,7 @@ class Fotky(db.Model):
         "Poznamky",
         primaryjoin="and_(foreign(Fotky.idzaznamu) == Poznamky.id, Fotky.poznamka_bool == True)",
         back_populates="fotky",
-        overlaps="servis"
+        overlaps="servis, fotky"
     )
 
 
@@ -169,5 +169,5 @@ class Poznamky(db.Model):
         cascade="all, delete-orphan",
 
         # Důležité pro zamezení chyb při překrývání vztahů
-        overlaps="fotky"
+        overlaps="servis, fotky"
     )
