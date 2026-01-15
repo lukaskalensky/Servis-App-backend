@@ -154,8 +154,7 @@ class Poznamky(db.Model):
     user_id = db.Column(
         db.Integer,
         db.ForeignKey("users.id"),
-        nullable=False,
-        overlaps="servis"
+        nullable=False
     )
 
     fotky = db.relationship(
