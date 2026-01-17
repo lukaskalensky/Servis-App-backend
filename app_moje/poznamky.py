@@ -2,6 +2,7 @@ from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from flask_jwt_extended import jwt_required
 from sqlalchemy.exc import SQLAlchemyError
+from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from .db import db
 from .modely import Poznamky  # Ujisti se, že importuješ model správně
@@ -22,9 +23,12 @@ class PoznamkyList(MethodView):
     @jwt_required()
     @blp.response(200, PoznamkySchema(many=True))
     def get(self):
-        # Pokud bys měl v modelu user_id, filtroval bys takto:
-        # user_id = get_jwt_identity()
-        # return db.session.execute(db.select(Poznamky).where(Poznamky.user_id == user_id)).scalars().all()
+        user_id = get_jwt_identity()
+
+        # Je lepší vracet jen poznámky konkrétního uživatele
+        return db.session.execute(
+            db.select(Poznamky).where(Poznamky.user_id == user_id)
+        ).scalars().all()
 
         # Bez user_id vracíme vše:
         return db.session.execute(
@@ -37,7 +41,8 @@ class PoznamkyList(MethodView):
     @blp.response(201, PoznamkySchema)
     def post(self, poznamky_data):
         # Vytvoření instance modelu
-        nova_poznamka = Poznamky(**poznamky_data)
+        user_id = get_jwt_identity()
+        nova_poznamka = Poznamky(**poznamky_data, user_id=user_id)
 
         try:
             db.session.add(nova_poznamka)
