@@ -82,23 +82,16 @@ class FotkaUpload(MethodView):
         return fotka
 
 
-@blp.route("/<string:poznamky_datum>/<string:nazev_motorky>/<string:nazev_poznamky>/fotky")
+@blp.route("/<string:nazev_motorky>/<string:nazev_poznamky>/fotky")
 class FotkaPoznamkyUpload(MethodView):
 
     @jwt_required()
     @blp.response(201, FotkaSchema)
-    def post(self, poznamky_datum, nazev_motorky, nazev_poznamky):
+    def post(self, nazev_motorky, nazev_poznamky):
         user_id = get_jwt_identity()
-
-        try:
-            # Předpokládám formát např. "2023-01-01T12:00:00" - upravte dle formátu frontendu
-            dt_object = datetime.fromisoformat(poznamky_datum)
-        except ValueError:
-            abort(400, message="Neplatný formát data. Očekáván ISO formát.")
 
         poznamka = db.session.execute(
             db.select(Poznamky).where(
-                Poznamky.datumdatetime == dt_object,
                 Poznamky.nazev_motorky == nazev_motorky,
                 Poznamky.nazev == nazev_poznamky,
                 Poznamky.user_id == user_id
@@ -168,23 +161,16 @@ class FotkaList(MethodView):
         return servis.fotky
 
 
-@blp.route("/<string:poznamky_datum>/<string:nazev_motorky>/<string:nazev_poznamky>/fotky")
+@blp.route("/<string:nazev_motorky>/<string:nazev_poznamky>/fotky")
 class FotkaPoznamkyList(MethodView):
 
     @jwt_required()
     @blp.response(200, FotkaSchema(many=True))
-    def get(self, poznamky_datum, nazev_motorky, nazev_poznamky):
+    def get(self, nazev_motorky, nazev_poznamky):
         user_id = get_jwt_identity()
-
-        try:
-            # Předpokládám formát např. "2023-01-01T12:00:00" - upravte dle formátu frontendu
-            dt_object = datetime.fromisoformat(poznamky_datum)
-        except ValueError:
-            abort(400, message="Neplatný formát data. Očekáván ISO formát.")
 
         poznamka = db.session.execute(
             db.select(Poznamky).where(
-                Poznamky.datumdatetime == dt_object,
                 Poznamky.nazev_motorky == nazev_motorky,
                 Poznamky.nazev == nazev_poznamky,
                 Poznamky.user_id == user_id
