@@ -2,7 +2,7 @@
 from flask.views import MethodView
 from flask_smorest import Blueprint, abort
 from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity
-from flask import jsonify
+from flask import jsonify, current_app
 from .db import db
 from .modely import User
 from app_moje.schema.user import UserRegisterSchema, UserLoginSchema, UserSchema
