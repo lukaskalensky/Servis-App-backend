@@ -11,8 +11,8 @@ from .servis import blp as ServisV1Blueprint
 from .ukon import blp as UkonV1Blueprint
 from .poznamky import blp as PoznamkyV1Blueprint
 from .db import db
+from .mail import mail
 from .modely import User, Moto, Servis, Fotky, Ukon, Poznamky
-from flask_mail import Mail, Message
 
 
 def create_app():
@@ -38,7 +38,7 @@ def create_app():
     # Inicializace rozšíření s aplikací
     db.init_app(app)
     jwt = JWTManager(app)
-    mail = Mail(app)
+    mail.init_app(app)
 
     with app.app_context():
         db.create_all()

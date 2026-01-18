@@ -8,7 +8,7 @@ from .modely import User
 from app_moje.schema.user import UserRegisterSchema, UserLoginSchema, UserSchema
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import or_  # Pro vyhledávání podle jména NEBO emailu
-from .app import mail, app
+from .mail import mail
 import threading
 
 # Vytvoření nového blueprintu pro autentizaci
@@ -49,7 +49,9 @@ class UserRegister(MethodView):
                           recipients=user_data["email"])
 
             msg.body = f"Dobrý den {user_data["username"]},\n\nděkuji za registraci v moji aplikaci."
-            thread = threading.Thread(target=send_async_email, args=(app, msg))
+            real_app = current_app._get_current_object()
+            thread = threading.Thread(
+                target=send_async_email, args=(real_app, msg))
             thread.start()
         except IntegrityError:  # Pro případ, že by unikátnost selhala na úrovni DB
             db.session.rollback()
