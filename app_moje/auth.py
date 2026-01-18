@@ -46,7 +46,7 @@ class UserRegister(MethodView):
             db.session.add(user)
             db.session.commit()
             msg = Message("Vítejte v naší aplikaci!",
-                          [recipients = user_data["email"]])
+                          recipients=[user_data["email"]])
 
             msg.body = f"Dobrý den {user_data["username"]},\n\nděkuji za registraci v moji aplikaci."
             real_app = current_app._get_current_object()
