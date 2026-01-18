@@ -12,6 +12,7 @@ from .ukon import blp as UkonV1Blueprint
 from .poznamky import blp as PoznamkyV1Blueprint
 from .db import db
 from .modely import User, Moto, Servis, Fotky, Ukon, Poznamky
+from flask_mail import Mail, Message
 
 
 def create_app():
@@ -24,9 +25,20 @@ def create_app():
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
     app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=30)
 
+    app.config['MAIL_SERVER'] = 'localhost'  # Nebo '127.0.0.1'
+    app.config['MAIL_PORT'] = 25             # Standardní port pro Postfix
+    # Lokální doručení většinou šifrování nevyžaduje
+    app.config['MAIL_USE_TLS'] = False
+    app.config['MAIL_USE_SSL'] = False
+    # Pokud Postfix nevyžaduje auth pro localhost (což je standard), jméno a heslo vynechte:
+    app.config['MAIL_USERNAME'] = None
+    app.config['MAIL_PASSWORD'] = None
+    app.config['MAIL_DEFAULT_SENDER'] = 'noreply@kalensky.org'
+
     # Inicializace rozšíření s aplikací
     db.init_app(app)
     jwt = JWTManager(app)
+    mail = Mail(app)
 
     with app.app_context():
         db.create_all()

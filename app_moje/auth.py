@@ -8,10 +8,21 @@ from .modely import User
 from app_moje.schema.user import UserRegisterSchema, UserLoginSchema, UserSchema
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import or_  # Pro vyhledávání podle jména NEBO emailu
+from .app import mail, app
+import threading
 
 # Vytvoření nového blueprintu pro autentizaci
 blp = Blueprint("auth", __name__,
                 description="Autentizační operace", url_prefix="/auth")
+
+
+def send_async_email(app, msg):
+    with app.app_context():
+        try:
+            mail.send(msg)
+            print("Email odeslán do fronty Postfixu.")
+        except Exception as e:
+            print(f"Chyba při odesílání: {e}")
 
 
 @blp.route("/register")
@@ -34,6 +45,12 @@ class UserRegister(MethodView):
         try:
             db.session.add(user)
             db.session.commit()
+            msg = Message("Vítejte v naší aplikaci!",
+                          recipients=user_data["email"])
+
+            msg.body = f"Dobrý den {user_data["username"]},\n\nděkuji za registraci v moji aplikaci."
+            thread = threading.Thread(target=send_async_email, args=(app, msg))
+            thread.start()
         except IntegrityError:  # Pro případ, že by unikátnost selhala na úrovni DB
             db.session.rollback()
             abort(500, message="Chyba při ukládání uživatele.")
