@@ -9,6 +9,7 @@ from app_moje.schema.user import UserRegisterSchema, UserLoginSchema, UserSchema
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy import or_  # Pro vyhledávání podle jména NEBO emailu
 from .mail import mail
+from flask_mail import Message
 import threading
 
 # Vytvoření nového blueprintu pro autentizaci
@@ -48,7 +49,7 @@ class UserRegister(MethodView):
             msg = Message("Vítejte v naší aplikaci!",
                           recipients=[user_data["email"]])
 
-            msg.body = f"Dobrý den {user_data["username"]},\n\nděkuji za registraci v moji aplikaci."
+            msg.body = f"Dobrý den {user_data['username']},\n\nděkuji za registraci v moji aplikaci."
             real_app = current_app._get_current_object()
             thread = threading.Thread(
                 target=send_async_email, args=(real_app, msg))
