@@ -53,7 +53,6 @@ class FotkaUpload(MethodView):
 
         filename = secure_filename(file.filename)
 
-        # dočasné uložení
         with tempfile.NamedTemporaryFile(delete=False) as tmp:
             file.save(tmp.name)
             tmp_path = tmp.name
@@ -110,7 +109,6 @@ class FotkaPoznamkyUpload(MethodView):
 
         filename = secure_filename(file.filename)
 
-        # dočasné uložení
         with tempfile.NamedTemporaryFile(delete=False) as tmp:
             file.save(tmp.name)
             tmp_path = tmp.name
@@ -202,17 +200,15 @@ class FotkaDownload(MethodView):
         if not fotka:
             abort(404, message="Fotka nenalezena nebo nepatří uživateli")
 
-        # remote path = cesta uložená v DB
         file_bytes = download_file_sftp(
             fotka.pathobrazku.replace("/static", "/uploads"))
 
-        # streamujeme přes Flask
         return send_file(
             io.BytesIO(file_bytes),
             download_name=fotka.pathobrazku.split(
-                "/")[-1],  # Renamed from attachment_filename
+                "/")[-1],
             mimetype="image/jpeg",
-            as_attachment=True  # Doporučeno přidat, pokud chcete vynutit stažení
+            as_attachment=True
         )
 
 
@@ -236,15 +232,13 @@ class FotkaPoznamkyDownload(MethodView):
         if not fotka:
             abort(404, message="Fotka nenalezena nebo nepatří uživateli")
 
-        # remote path = cesta uložená v DB
         file_bytes = download_file_sftp(
             fotka.pathobrazku.replace("/static", "/uploads"))
 
-        # streamujeme přes Flask
         return send_file(
             io.BytesIO(file_bytes),
             download_name=fotka.pathobrazku.split(
-                "/")[-1],  # Renamed from attachment_filename
+                "/")[-1],
             mimetype="image/jpeg",
-            as_attachment=True  # Doporučeno přidat, pokud chcete vynutit stažení
+            as_attachment=True
         )

@@ -1,6 +1,6 @@
 from .db import db
 from werkzeug.security import generate_password_hash, check_password_hash
-from passlib.hash import pbkdf2_sha256 as sha256  # Nebo bcrypt, argon2
+from passlib.hash import pbkdf2_sha256 as sha256
 from sqlalchemy.orm import foreign
 from sqlalchemy import and_
 
@@ -22,7 +22,7 @@ class User(db.Model):
 
     @property
     def password(self):
-        raise AttributeError("Password is write-only")  # getter jen na ochranu
+        raise AttributeError("Password is write-only")
 
     @password.setter
     def password(self, password):
@@ -87,7 +87,6 @@ class Servis(db.Model):
 
     user = db.relationship("User", backref="servisy")
 
-    # OPRAVA: Přidán primaryjoin, aby se nemíchaly fotky poznámek
     fotky = db.relationship(
         "Fotky",
         primaryjoin="and_(foreign(Fotky.idzaznamu) == Servis.id, Fotky.poznamka_bool == False)",
@@ -113,7 +112,6 @@ class Fotky(db.Model):
         overlaps="poznamky, fotky"
     )
 
-    # 2. Relace na POZNÁMKY (platí jen když poznamka_bool == True)
     poznamky = db.relationship(
         "Poznamky",
         primaryjoin="and_(foreign(Fotky.idzaznamu) == Poznamky.id, Fotky.poznamka_bool == True)",
@@ -159,15 +157,7 @@ class Poznamky(db.Model):
 
     fotky = db.relationship(
         "Fotky",
-        # TOTO JE KLÍČOVÁ ÚPRAVA:
         primaryjoin="and_(foreign(Fotky.idzaznamu) == Poznamky.id, Fotky.poznamka_bool == True)",
-
-        # Pokud v modelu Fotky nemáte definovaný vztah zpět k poznámkám,
-        # 'back_populates' může dělat problémy.
-        # Pokud ho tam máte, nechte ho. Pokud ne, raději použijte viewonly=True pro čtení.
-        # Ale pro cascade delete to obvykle potřebujete takto:
         cascade="all, delete-orphan",
-
-        # Důležité pro zamezení chyb při překrývání vztahů
         overlaps="servis, fotky"
     )

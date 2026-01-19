@@ -16,6 +16,6 @@ class ServisBaseSchema(Schema):
     imagepocet = fields.Int(required=True)
 
 
-class ServisSchema(ServisBaseSchema):  # Pro zobrazení dat uživatele (bez hesla)
+class ServisSchema(ServisBaseSchema):
     id = fields.Int(dump_only=True)
     user_id = fields.Int(dump_only=True)

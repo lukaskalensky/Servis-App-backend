@@ -22,7 +22,6 @@ class MotoList(MethodView):
     @jwt_required()
     @blp.response(200, MotoSchema(many=True))
     def get(self):
-        """Vrátí motorky aktuálního uživatele"""
         user_id = get_jwt_identity()
 
         return db.session.execute(
@@ -33,7 +32,6 @@ class MotoList(MethodView):
     @blp.arguments(MotoBaseSchema)
     @blp.response(201, MotoSchema)
     def post(self, moto_data):
-        """Vytvoří motorku pro přihlášeného uživatele"""
         user_id = get_jwt_identity()
 
         moto = Moto(**moto_data, user_id=user_id)

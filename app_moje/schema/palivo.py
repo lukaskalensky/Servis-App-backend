@@ -6,5 +6,5 @@ class PalivoBaseSchema(Schema):
         required=True)
 
 
-class PalivoSchema(PalivoBaseSchema):  # Pro zobrazení dat uživatele (bez hesla)
+class PalivoSchema(PalivoBaseSchema):
     id = fields.Int(dump_only=True)

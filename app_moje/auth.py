@@ -7,12 +7,12 @@ from .db import db
 from .modely import User
 from app_moje.schema.user import UserRegisterSchema, UserLoginSchema, UserSchema
 from sqlalchemy.exc import IntegrityError
-from sqlalchemy import or_  # Pro vyhledávání podle jména NEBO emailu
+from sqlalchemy import or_
 from .mail import mail
 from flask_mail import Message
 import threading
 
-# Vytvoření nového blueprintu pro autentizaci
+
 blp = Blueprint("auth", __name__,
                 description="Autentizační operace", url_prefix="/auth")
 
@@ -29,7 +29,7 @@ def send_async_email(app, msg):
 @blp.route("/register")
 class UserRegister(MethodView):
     @blp.arguments(UserRegisterSchema)
-    @blp.response(201, UserSchema)  # Vrátíme data nového uživatele (bez hesla)
+    @blp.response(201, UserSchema)
     def post(self, user_data):
         """Registruje nového uživatele."""
         if db.session.execute(db.select(User).where(User.username == user_data["username"])).scalar_one_or_none():
@@ -41,7 +41,7 @@ class UserRegister(MethodView):
             username=user_data["username"],
             email=user_data["email"]
         )
-        user.password = user_data["password"]  # Nastaví hash hesla
+        user.password = user_data["password"]
 
         try:
             db.session.add(user)
@@ -54,7 +54,7 @@ class UserRegister(MethodView):
             thread = threading.Thread(
                 target=send_async_email, args=(real_app, msg))
             thread.start()
-        except IntegrityError:  # Pro případ, že by unikátnost selhala na úrovni DB
+        except IntegrityError:
             db.session.rollback()
             abort(500, message="Chyba při ukládání uživatele.")
         except Exception as e:
@@ -67,7 +67,6 @@ class UserRegister(MethodView):
 class UserLogin(MethodView):
     @blp.arguments(UserLoginSchema)
     def post(self, user_data):
-        """Přihlásí uživatele a vrátí JWT tokeny."""
         login_identifier = user_data["username_or_email"]
         password = user_data["password"]
 
@@ -79,10 +78,9 @@ class UserLogin(MethodView):
         ).scalar_one_or_none()
 
         if user and user.check_password(password):
-            # Identita pro JWT může být ID uživatele
             access_token = create_access_token(identity=str(user.id))
             refresh_token = create_refresh_token(
-                identity=str(user.id))  # Volitelný refresh token
+                identity=str(user.id))
             return jsonify(access_token=access_token, refresh_token=refresh_token), 200
 
         abort(401, message="Nesprávné uživatelské jméno/email nebo heslo.")
@@ -91,10 +89,8 @@ class UserLogin(MethodView):
 @blp.route("/refresh")
 class TokenRefresh(MethodView):
     @blp.doc(description="Získá nový přístupový token pomocí platného refresh tokenu.")
-    # Vyžaduje platný refresh token v Authorization hlavičce
     @jwt_required(refresh=True)
     def post(self):
-        # Získá identitu uživatele z refresh tokenu
         current_user_id = get_jwt_identity()
         new_access_token = create_access_token(identity=current_user_id)
         return jsonify(access_token=new_access_token), 200

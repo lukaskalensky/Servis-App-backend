@@ -9,6 +9,6 @@ class MotoBaseSchema(Schema):
     image = fields.Str(required=False)
 
 
-class MotoSchema(MotoBaseSchema):  # Pro zobrazení dat uživatele (bez hesla)
+class MotoSchema(MotoBaseSchema):
     id = fields.Int(dump_only=True)
     user_id = fields.Int(dump_only=True)

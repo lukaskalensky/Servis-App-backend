@@ -8,6 +8,6 @@ class UkonBaseSchema(Schema):
     mesic = fields.Int(required=True)
 
 
-class UkonSchema(UkonBaseSchema):  # Pro zobrazení dat uživatele (bez hesla)
+class UkonSchema(UkonBaseSchema):
     id = fields.Int(dump_only=True)
     user_id = fields.Int(dump_only=True)

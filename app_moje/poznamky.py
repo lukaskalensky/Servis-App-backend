@@ -5,7 +5,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
 from .db import db
-from .modely import Poznamky  # Ujisti se, že importuješ model správně
+from .modely import Poznamky
 from app_moje.schema.poznamky import PoznamkySchema, PoznamkyBaseSchema
 
 blp = Blueprint(
@@ -18,29 +18,19 @@ blp = Blueprint(
 
 @blp.route("/")
 class PoznamkyList(MethodView):
-
-    # --- GET: Získání všech poznámek ---
     @jwt_required()
     @blp.response(200, PoznamkySchema(many=True))
     def get(self):
         user_id = get_jwt_identity()
 
-        # Je lepší vracet jen poznámky konkrétního uživatele
         return db.session.execute(
             db.select(Poznamky).where(Poznamky.user_id == user_id)
         ).scalars().all()
 
-        # Bez user_id vracíme vše:
-        return db.session.execute(
-            db.select(Poznamky)
-        ).scalars().all()
-
-    # --- POST: Přidání nové poznámky ---
     @jwt_required()
     @blp.arguments(PoznamkyBaseSchema)
     @blp.response(201, PoznamkySchema)
     def post(self, poznamky_data):
-        # Vytvoření instance modelu
         user_id = get_jwt_identity()
         nova_poznamka = Poznamky(**poznamky_data, user_id=user_id)
 
@@ -57,7 +47,6 @@ class PoznamkyList(MethodView):
 @blp.route("/<int:poznamka_id>")
 class PoznamkyDetail(MethodView):
 
-    # --- DELETE: Smazání poznámky (pro úplnost) ---
     @jwt_required()
     def delete(self, poznamka_id):
         poznamka = db.session.get(Poznamky, poznamka_id)

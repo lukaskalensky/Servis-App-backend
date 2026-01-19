@@ -50,7 +50,6 @@ class MotoImageUpload(MethodView):
 
         filename = secure_filename(file.filename)
 
-        # dočasné uložení
         with tempfile.NamedTemporaryFile(delete=False) as tmp:
             file.save(tmp.name)
             tmp_path = tmp.name
@@ -77,7 +76,6 @@ class MotoImageUpload(MethodView):
 
     @jwt_required()
     def get(self, moto_nazev):
-        # 1. Najdeme záznam v databázi
         moto = db.session.execute(
             db.select(Moto).where(Moto.nazev == moto_nazev)
         ).scalar_one_or_none()
@@ -85,38 +83,28 @@ class MotoImageUpload(MethodView):
         if not moto or not moto.image:
             abort(404, message="Motorka nebo obrázek nenalezen")
 
-        # 2. Rekonstrukce cesty k souboru na SFTP
-        # V databázi máte uloženou URL (např. .../filename.jpg), musíme z ní získat název souboru
         filename = os.path.basename(moto.image)
 
-        # Sestavíme cestu, kde by měl soubor na SFTP ležet
-        # Musí to odpovídat logice, kterou jste použil při uploadu:
-        # f"{UPLOAD_BASE_PATH}/moto/{user_id}/{moto_id}/{filename}"
         remote_path = f"{UPLOAD_BASE_PATH}/moto/{moto.user_id}/{moto_nazev}/{filename}"
 
         try:
-            # 3. Stažení bytů přes vaši SFTP funkci
             file_bytes = download_file_sftp(remote_path)
 
-            # 4. Příprava odpovědi
-            # Převedeme bytes na stream, kterému Flask rozumí
             file_stream = io.BytesIO(file_bytes)
 
-            # Zkusíme odhadnout typ souboru (image/jpeg, image/png) podle přípony
             mime_type, _ = mimetypes.guess_type(filename)
             if not mime_type:
-                mime_type = 'image/jpeg'  # Fallback
+                mime_type = 'image/jpeg'
 
             return send_file(
                 file_stream,
                 mimetype=mime_type,
-                as_attachment=True,  # False = zobrazit v prohlížeči/appce, True = stáhnout
+                as_attachment=True,
                 download_name=filename
             )
 
         except FileNotFoundError:
             abort(404, message="Soubor fyzicky chybí na SFTP serveru")
         except Exception as e:
-            # Logování chyby
             print(f"Chyba SFTP: {e}")
             abort(500, message="Chyba při stahování souboru")

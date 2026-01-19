@@ -41,7 +41,6 @@ def download_file_sftp(remote_path):
 
 
 def _ensure_remote_dir(sftp, remote_dir):
-    """Vytvoří adresáře rekurzivně"""
     parts = remote_dir.strip("/").split("/")
     path = ""
     for part in parts:

@@ -14,6 +14,5 @@ class TankovaniBaseSchema(Schema):
     cenacelkem = fields.Int(required=False)
 
 
-# Pro zobrazení dat uživatele (bez hesla)
 class TankovaniSchema(TankovaniBaseSchema):
     id = fields.Int(dump_only=True)
